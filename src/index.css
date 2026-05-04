@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-100: #fbebcb;
+  --color-brand-200: #f4d38c;
+  --color-brand-300: #eeb550;
+  --color-brand-400: #e2c16a;
+  --color-brand-500: #d4af37; /* Accent Gold */
+  --color-brand-600: #a98020;
+
+  --color-bg-dark: #070708;       /* Map Base Background */
+  --color-bg-panel: rgba(12, 12, 14, 0.85); /* HUD Panels */
+  --color-bg-elevated: rgba(255, 255, 255, 0.04); /* Hover/Card Base */
+  --color-bg-elevated-hover: rgba(255, 255, 255, 0.08);
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  
+  --color-border-visible: rgba(255, 255, 255, 0.1);
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+
+  /* Intelligence System Colors */
+  --color-risk-critical: #ef4444; /* High Impact / Direct */
+  --color-risk-high: #f59e0b;     /* Likely Impact / Secondary */
+  --color-risk-medium: #eab308;
+  --color-risk-low: #3b82f6;
+
+  /* Editorial Categories */
+  --color-cat-politics: #f59e0b;
+  --color-cat-macro: #ef4444;
+  --color-cat-corporate: #10b981;
+  --color-cat-tech: #3b82f6;
+  --color-cat-trade: #8b5cf6;
+}
+
+@layer utilities {
+  .text-cat-politics { color: var(--color-cat-politics); }
+  .text-cat-macro { color: var(--color-cat-macro); }
+  .text-cat-corporate { color: var(--color-cat-corporate); }
+  .text-cat-tech { color: var(--color-cat-tech); }
+  .text-cat-trade { color: var(--color-cat-trade); }
+  
+  .bg-cat-politics { background-color: var(--color-cat-politics); }
+  .bg-cat-macro { background-color: var(--color-cat-macro); }
+  .bg-cat-corporate { background-color: var(--color-cat-corporate); }
+  .bg-cat-tech { background-color: var(--color-cat-tech); }
+  .bg-cat-trade { background-color: var(--color-cat-trade); }
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--color-bg-dark)] text-text-primary font-sans antialiased overflow-hidden selection:bg-brand-500/30 selection:text-white;
+  }
+}
+
+/* Custom scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Leaflet Customizations for Dark Mode */
+.leaflet-container {
+  background-color: var(--color-bg-dark) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.leaflet-layer {
+  opacity: 0.5 !important;
+  filter: contrast(1.1) brightness(0.8) grayscale(0.2);
+}
+
+.leaflet-control-zoom {
+  border: 1px solid var(--color-border-visible) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+  backdrop-filter: blur(12px);
+}
+
+.leaflet-control-zoom a {
+  background-color: rgba(15, 15, 18, 0.8) !important;
+  color: var(--color-text-secondary) !important;
+  border-bottom: 1px solid var(--color-border-subtle) !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(7, 7, 8, 0.6) !important;
+  color: var(--color-text-tertiary) !important;
+  backdrop-filter: blur(4px);
+  padding: 4px 12px !important;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.leaflet-control-attribution a {
+  color: var(--color-text-secondary) !important;
+  text-decoration: none;
+}
+
+/* Custom Popup overrides */
+.leaflet-popup-content-wrapper {
+  background: rgba(15, 15, 18, 0.9) !important;
+  backdrop-filter: blur(20px);
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border-visible);
+  border-radius: 12px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+  padding: 4px;
+}
+
+.leaflet-popup-tip {
+  background: rgba(15, 15, 18, 0.9) !important;
+  border: 1px solid var(--color-border-visible);
+  border-top: none;
+  border-left: none;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+}
+
+/* Pulse Animation for Map */
+.pulse-icon {
+  background: var(--color-bg-dark);
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pulse-icon.selected {
+  background: currentColor;
+  box-shadow: 0 0 20px currentColor;
+}
+
+.pulse-core {
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 10px white;
+}
+
+.pulse-icon.cat-politics { border-color: var(--color-cat-politics); color: var(--color-cat-politics); box-shadow: 0 0 12px 0 var(--color-cat-politics); }
+.pulse-icon.cat-macro { border-color: var(--color-cat-macro); color: var(--color-cat-macro); box-shadow: 0 0 12px 0 var(--color-cat-macro); }
+.pulse-icon.cat-corporate { border-color: var(--color-cat-corporate); color: var(--color-cat-corporate); box-shadow: 0 0 12px 0 var(--color-cat-corporate); }
+.pulse-icon.cat-tech { border-color: var(--color-cat-tech); color: var(--color-cat-tech); box-shadow: 0 0 12px 0 var(--color-cat-tech); }
+.pulse-icon.cat-trade { border-color: var(--color-cat-trade); color: var(--color-cat-trade); box-shadow: 0 0 12px 0 var(--color-cat-trade); }
+
+.pulse-icon .pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  animation: pulse 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; border-width: 1px; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; border-width: 0px; }
+}
+
+/* Heat zones for zoomed out visual */
+.heat-zone {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  opacity: 0.15;
+  filter: blur(4px);
+  transition: all 0.5s ease-out;
+}
+.heat-zone.cat-politics { background-color: var(--color-cat-politics); }
+.heat-zone.cat-macro { background-color: var(--color-cat-macro); }
+.heat-zone.cat-corporate { background-color: var(--color-cat-corporate); }
+.heat-zone.cat-tech { background-color: var(--color-cat-tech); }
+.heat-zone.cat-trade { background-color: var(--color-cat-trade); }
+
+/* Intelligence Connection Vector */
+.intelligence-vector {
+  stroke-dashoffset: 1000;
+  animation: dash-anim 30s linear infinite;
+}
+
+@keyframes dash-anim {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
